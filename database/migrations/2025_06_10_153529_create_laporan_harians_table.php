@@ -32,12 +32,30 @@ return new class extends Migration
     });
 
     // Update satuan untuk data existing (jika ada)
-        DB::statement("
-            UPDATE laporan_harians lh 
-            JOIN jenis_limbahs jl ON lh.jenis_limbah_id = jl.id 
-            SET lh.satuan = jl.satuan_default 
-            WHERE lh.satuan IS NULL OR lh.satuan = ''
-        ");
+    // Menggunakan syntax yang kompatibel dengan SQLite dan MySQL
+    if (Schema::hasTable('laporan_harians') && Schema::hasTable('jenis_limbahs')) {
+        // Untuk MySQL
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("
+                UPDATE laporan_harians lh 
+                JOIN jenis_limbahs jl ON lh.jenis_limbah_id = jl.id 
+                SET lh.satuan = jl.satuan_default 
+                WHERE lh.satuan IS NULL OR lh.satuan = ''
+            ");
+        }
+        // Untuk SQLite (untuk testing)
+        else {
+            DB::statement("
+                UPDATE laporan_harians 
+                SET satuan = (
+                    SELECT satuan_default 
+                    FROM jenis_limbahs 
+                    WHERE jenis_limbahs.id = laporan_harians.jenis_limbah_id
+                )
+                WHERE satuan IS NULL OR satuan = ''
+            ");
+        }
+    }
     }
 
     /**
