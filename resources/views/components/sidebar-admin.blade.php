@@ -68,6 +68,30 @@
   </a>
 </li>
 
+<li class="relative px-4 py-1">
+    <span x-cloak
+        class="absolute inset-y-0 left-0 w-1 bg-green-600 rounded-tr-lg rounded-br-lg"
+        aria-hidden="true"
+        style="{{ request()->routeIs('admin.jenis-sampah.*') ? '' : 'display:none;' }}">
+    </span>
+
+    <a class="inline-flex items-center w-full text-sm font-semibold text-gray-500 dark:text-gray-200
+        transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200
+        hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-2 py-2
+        {{ request()->routeIs('admin.jenis-sampah.*') ? 'text-green-700 font-bold bg-green-100 dark:bg-green-900' : '' }}"
+        href="{{ route('admin.jenis-sampah.index') }}"
+        :title="isSidebarCollapsed ? 'Jenis Sampah' : ''">
+        
+        <svg class="w-5 h-5 flex-shrink-0" aria-hidden="true" fill="none"
+             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+             viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M3 6h18M8 6v12a2 2 0 002 2h4a2 2 0 002-2V6m-6-3h4a1 1 0 011 1v2H7V4a1 1 0 011-1h4z" />
+        </svg>
+
+        <span x-show="!isSidebarCollapsed" x-transition class="ml-4">Jenis Sampah</span>
+    </a>
+</li>
+
 <!-- Tambahkan menu laporan harian untuk admin -->
 <li class="relative px-4 py-1">
   <span x-cloak class="absolute inset-y-0 left-0 w-1 bg-green-600 rounded-tr-lg rounded-br-lg" aria-hidden="true"

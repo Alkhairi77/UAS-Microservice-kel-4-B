@@ -15,6 +15,8 @@ use App\Http\Controllers\KategoriArtikelController;
 use App\Http\Controllers\PengelolaanLimbahController;
 use App\Http\Controllers\LaporanHasilPengelolaanController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Admin\JenisSampahController;
+
 
 // Frontend routes (public access)
 Route::get('/', function () {
@@ -156,6 +158,9 @@ Route::middleware('auth')->group(function () {
         // Backend Artikel (Admin)
         Route::resource('artikel', ArtikelController::class);
         Route::post('/artikel/bulk-action', [ArtikelController::class, 'bulkAction'])->name('artikel.bulk-action');
+      
+        // Jenis Sampah routes
+        Route::resource('jenis-sampah', JenisSampahController::class);
     });
 
 

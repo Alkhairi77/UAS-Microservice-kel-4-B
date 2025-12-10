@@ -23,14 +23,6 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Display the company registration view.
-     */
-    public function createPerusahaan(): View
-    {
-        return view('auth.register-perusahaan');
-    }
-
-    /**
      * Handle an incoming registration request.
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -41,25 +33,18 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['sometimes', 'string', 'in:admin,perusahaan'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'perusahaan',
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        if ($user->role === 'perusahaan') {
-            return redirect()->route('perusahaan.create')
-                ->with('success', 'Registrasi berhasil! Silakan lengkapi profil perusahaan Anda.');
-        }
-
-        return redirect()->route('admin.dashboard');
+        return redirect(route('dashboard', absolute: false));
     }
 }

@@ -48,7 +48,11 @@ class AdminController extends Controller
 
         // Recent Activities
         $recentUsers = User::latest()->take(5)->get();
-        $recentPerusahaan = Perusahaan::with('user')->latest()->take(5)->get();
+        $recentPerusahaan = Perusahaan::withCount('laporanHarian')
+            ->with('user')
+            ->orderBy('laporan_harian_count', 'desc')
+            ->take(5)
+            ->get();
         $recentLaporan = LaporanHarian::with(['perusahaan', 'jenisLimbah'])
             ->latest('tanggal')->take(5)->get();
 
@@ -142,20 +146,16 @@ class AdminController extends Controller
 
     private function getTopPerusahaanByLaporan()
     {
-        return Perusahaan::select('perusahaans.*', DB::raw('COUNT(laporan_harians.id) as total_laporan'))
-            ->leftJoin('laporan_harians', 'perusahaans.id', '=', 'laporan_harians.perusahaan_id')
-            ->groupBy('perusahaans.id')
-            ->orderBy('total_laporan', 'desc')
+        return Perusahaan::withCount('laporanHarian')
+            ->orderBy('laporan_harian_count', 'desc')
             ->take(5)
             ->get();
     }
 
     private function getTopJenisLimbah()
     {
-        return JenisLimbah::select('jenis_limbahs.*', DB::raw('COUNT(laporan_harians.id) as total_laporan'))
-            ->leftJoin('laporan_harians', 'jenis_limbahs.id', '=', 'laporan_harians.jenis_limbah_id')
-            ->groupBy('jenis_limbahs.id')
-            ->orderBy('total_laporan', 'desc')
+        return JenisLimbah::withCount('laporanHarian')
+            ->orderBy('laporan_harian_count', 'desc')
             ->take(5)
             ->get();
     }
@@ -204,12 +204,12 @@ class AdminController extends Controller
                 'action' => route('pengelolaan-limbah.index')
             ];
         }
+
         $inactiveCompanies = Perusahaan::whereDoesntHave('laporanHarian', function($query) {
             $query->where('created_at', '>', Carbon::now()->subDays(7));
         })->count();
 
         if ($inactiveCompanies > 0) {
-            // Cek apakah notifikasi sudah pernah dikirim dalam 1 hari terakhir
             $alreadySent = \App\Models\Notification::where('title', 'Perusahaan Tidak Aktif')
                 ->where('type', 'warning')
                 ->where('created_at', '>=', now()->subDay())
@@ -224,7 +224,6 @@ class AdminController extends Controller
                 );
             }
         }
-
 
         return $alerts;
     }
