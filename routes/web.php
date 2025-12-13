@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VendorController;
@@ -77,10 +78,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/jenis-limbah/{jenisLimbah}', [JenisLimbahController::class, 'apiShow'])->name('jenis-limbah.show');
     });
 
-    
+
 
     //Notifikasi routes
-//
+    //
     // Notification routes
     Route::get('/notifications', function () {
         $notifications = auth()->user()->customNotifications()->latest()->paginate(20);
@@ -158,7 +159,7 @@ Route::middleware('auth')->group(function () {
         // Backend Artikel (Admin)
         Route::resource('artikel', ArtikelController::class);
         Route::post('/artikel/bulk-action', [ArtikelController::class, 'bulkAction'])->name('artikel.bulk-action');
-      
+
         // Jenis Sampah routes
         Route::resource('jenis-sampah', JenisSampahController::class);
     });
@@ -221,22 +222,22 @@ Route::middleware('auth')->group(function () {
         Route::resource('laporan-hasil-pengelolaan', LaporanHasilPengelolaanController::class);
         Route::get('/laporan-hasil-pengelolaan/create', [LaporanHasilPengelolaanController::class, 'create'])
             ->name('laporan-hasil-pengelolaan.create');
-        
+
         Route::post('/laporan-hasil-pengelolaan', [LaporanHasilPengelolaanController::class, 'store'])
             ->name('laporan-hasil-pengelolaan.store');
-        
+
         Route::get('/laporan-hasil-pengelolaan/{laporanHasilPengelolaan}/edit', [LaporanHasilPengelolaanController::class, 'edit'])
             ->name('laporan-hasil-pengelolaan.edit');
-        
+
         Route::put('/laporan-hasil-pengelolaan/{laporanHasilPengelolaan}', [LaporanHasilPengelolaanController::class, 'update'])
             ->name('laporan-hasil-pengelolaan.update');
-        
+
         Route::delete('/laporan-hasil-pengelolaan/{laporanHasilPengelolaan}', [LaporanHasilPengelolaanController::class, 'destroy'])
             ->name('laporan-hasil-pengelolaan.destroy');
-        
+
         Route::post('/laporan-hasil-pengelolaan/bulk-action', [LaporanHasilPengelolaanController::class, 'bulkAction'])
             ->name('laporan-hasil-pengelolaan.bulk-action');
-        
+
         Route::get('/api/pengelolaan-selesai', [LaporanHasilPengelolaanController::class, 'getPengelolaanSelesai'])
             ->name('api.pengelolaan-selesai');
 
@@ -260,13 +261,13 @@ Route::middleware('auth')->group(function () {
     // Laporan hasil
     Route::get('/laporan-hasil-pengelolaan', [LaporanHasilPengelolaanController::class, 'index'])
         ->name('laporan-hasil-pengelolaan.index');
-    
+
     Route::get('/laporan-hasil-pengelolaan/{laporanHasilPengelolaan}', [LaporanHasilPengelolaanController::class, 'show'])
         ->name('laporan-hasil-pengelolaan.show');
-    
+
     Route::get('/laporan-hasil-pengelolaan/export/csv', [LaporanHasilPengelolaanController::class, 'export'])
         ->name('laporan-hasil-pengelolaan.export');
-    
+
     Route::get('/laporan-hasil-pengelolaan/{laporanHasilPengelolaan}/dokumentasi/{index}', [LaporanHasilPengelolaanController::class, 'downloadDokumentasi'])
         ->name('laporan-hasil-pengelolaan.download-dokumentasi');
 
@@ -277,5 +278,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::get('/users/{user}/password/edit', [UserController::class, 'editPassword'])->name('users.password.edit');
         Route::put('/users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password.update');
+    });
+    // // Test Middleware 
+    Route::get('/_test/ping', function () {
+        Log::info('Ping endpoint hit');
+        return response()->json([
+            'message' => 'pong'
+        ]);
     });
 });

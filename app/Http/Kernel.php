@@ -6,12 +6,16 @@ use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\CorrelationIdMiddleware;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Schedule;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\PerusahaanMiddleware;
+// use App\Http\Middleware\CorrelationIdMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use Illuminate\Http\Middleware\HandleCors;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 
 class Kernel extends HttpKernel
 {
@@ -23,6 +27,8 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
+        // \App\Http\Middleware\CorrelationIdMiddleware::class,
+        CorrelationIdMiddleware::class,
         // \App\Http\Middleware\TrustHosts::class,
         TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
@@ -49,6 +55,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            CorrelationIdMiddleware::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -77,7 +84,9 @@ class Kernel extends HttpKernel
         'perusahaan' => PerusahaanMiddleware::class,
     ];
 
-    protected $middlewareAliases = $this->routeMiddleware;
+    protected $middlewareAliases = [
+        'correlation' => \App\Http\Middleware\CorrelationIdMiddleware::class,
+    ];
 
     protected function schedule(Schedule $schedule)
     {
