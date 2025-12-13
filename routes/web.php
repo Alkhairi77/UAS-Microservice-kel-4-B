@@ -17,7 +17,7 @@ use App\Http\Controllers\PengelolaanLimbahController;
 use App\Http\Controllers\LaporanHasilPengelolaanController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\JenisSampahController;
-
+use App\Http\Controllers\DemoLogController;
 
 // Frontend routes (public access)
 Route::get('/', function () {
@@ -279,11 +279,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{user}/password/edit', [UserController::class, 'editPassword'])->name('users.password.edit');
         Route::put('/users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password.update');
     });
-    // // Test Middleware 
-    Route::get('/_test/ping', function () {
-        Log::info('Ping endpoint hit');
-        return response()->json([
-            'message' => 'pong'
-        ]);
-    });
 });
+// // Test Middleware 
+Route::get('/_test/ping', function () {
+    Log::info('Ping endpoint hit');
+    return response()->json([
+        'message' => 'pong'
+    ]);
+});
+Route::get('/demo-log', [DemoLogController::class, 'index']);

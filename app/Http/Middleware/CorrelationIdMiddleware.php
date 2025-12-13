@@ -14,18 +14,20 @@ class CorrelationIdMiddleware
         $correlationId = $request->header('X-Correlation-Id')
             ?? (string) Str::uuid();
 
-        // SIMPAN KE REQUEST
+        // Simpan ke request
         $request->attributes->set('correlation_id', $correlationId);
 
-        // LOG (INI WAJIB MUNCUL)
-        Log::info('CorrelationId Middleware executed', [
+        // Log context (WAJIB UNTUK POINT E)
+        Log::info('Incoming request', [
             'correlation_id' => $correlationId,
-            'path' => $request->path()
+            'service' => 'service-demo',
+            'path' => $request->path(),
+            'method' => $request->method(),
         ]);
 
         $response = $next($request);
 
-        // TAMBAHKAN KE RESPONSE HEADER
+        // Tambahkan ke response header
         $response->headers->set('X-Correlation-Id', $correlationId);
 
         return $response;

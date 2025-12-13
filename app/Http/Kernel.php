@@ -27,8 +27,6 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        // \App\Http\Middleware\CorrelationIdMiddleware::class,
-        CorrelationIdMiddleware::class,
         // \App\Http\Middleware\TrustHosts::class,
         TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
@@ -36,6 +34,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        // \App\Http\Middleware\CorrelationIdMiddleware::class,
+
     ];
 
     /**
@@ -55,7 +55,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            CorrelationIdMiddleware::class,
+            // CorrelationIdMiddleware::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -85,7 +85,7 @@ class Kernel extends HttpKernel
     ];
 
     protected $middlewareAliases = [
-        'correlation' => \App\Http\Middleware\CorrelationIdMiddleware::class,
+        // 'correlation' => \App\Http\Middleware\CorrelationIdMiddleware::class,
     ];
 
     protected function schedule(Schedule $schedule)
