@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,10 +24,13 @@ class CorrelationIdMiddleware
         $request->attributes->set('correlation_id', $correlationId);
 
         // Add to log context
-        \Log::withContext([
+        Log::withContext([
             'correlation_id' => $correlationId,
             'service' => config('app.service_name', 'jenis-limbah-service'),
         ]);
+
+        // Incoming Request
+        Log::info('Permintaan Masuk');
 
         // Process the request
         $response = $next($request);
